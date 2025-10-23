@@ -1,0 +1,7 @@
+# AdamW optimizer configuration
+#_target_: torch.optim.AdamW
+_name_: adamw
+
+# Learning rate and scheduling
+lr: 1e-4
+weight_decay: 0.0

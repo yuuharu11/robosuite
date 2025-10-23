@@ -1,0 +1,4 @@
+_name_: rnn
+d_model: ${model.d_model}
+hidden_activation: tanh
+orthogonal: False

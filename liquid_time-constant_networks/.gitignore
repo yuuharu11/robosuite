@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.pyc
+
+# Hydra & W&B
+outputs/
+multirun/
+wandb/
+
+# Environment
+.env
+
+# IDE
+.vscode/
+.idea/
+
+data/
+
+*.sh
+
+logs/
+buffer/
+
+*.csv

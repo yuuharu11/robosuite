@@ -1,0 +1,13 @@
+{
+  // このワークスペースでGitの自動検出を停止（UIにリポジトリを表示しない）
+  "git.autoRepositoryDetection": false,
+  // 親フォルダのリポジトリも開かない
+  "git.openRepositoryInParentFolders": "never",
+  // 自動更新を止めて負荷とUI更新を抑止
+  "git.autorefresh": false,
+  // SCMの入出力変更数バッジや表示を抑制（必要に応じて）
+  "scm.showIncomingChanges": false,
+  "scm.showOutgoingChanges": false,
+  // Gitが見つからない警告を抑制（必要に応じて）
+  "git.ignoreMissingGitWarning": true
+}

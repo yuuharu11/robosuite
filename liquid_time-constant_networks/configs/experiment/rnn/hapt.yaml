@@ -1,0 +1,33 @@
+# @package _global_
+
+defaults:
+  - /model: default
+  - /pipeline: default
+  - override /dataset: hapt
+
+wandb:
+  project: HAPT
+  tags: [rnn, hapt]
+
+model:
+  dropout: 0.0
+  n_layers: 1
+  d_model: 128
+  prenorm: true
+  norm: layer
+
+loader:
+  batch_size: 50
+
+optimizer:
+  lr: 0.001
+
+trainer:
+  max_epochs: 30
+
+train:
+  seed: 1112
+  test: True
+  interval: step
+  monitor: val/accuracy
+  mode: max

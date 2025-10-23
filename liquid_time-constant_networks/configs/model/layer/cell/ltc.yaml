@@ -1,0 +1,31 @@
+_name_: ltc
+d_model: ${model.d_model}
+
+solver: "semi-implicit" # "semi-implicit", "explicit", "rungekutta"
+ode_solver_unfolds: 3
+
+# 4. 入力マッピングに関する設定
+input_mapping: "affine" # "identity", "linear", "affine" 
+
+# 5. パラメータの初期化範囲
+#    モデルの初期状態を決定する重要なハイパーパラメータです
+w_init_min: 0.01
+w_init_max: 1.0
+cm_init_min: 0.5
+cm_init_max: 0.5
+gleak_init_min: 1.0
+gleak_init_max: 1.0
+erev_init_factor: 1.0
+
+w_min_value: 0.00001
+w_max_value: 1000
+gleak_min_value: 0.00001
+gleak_max_value: 1000
+cm_t_min_value: 0.000001
+cm_t_max_value: 1000
+
+# 6. パラメータを固定するためのオプション
+#    通常はnull（無効）のままで、特定の値を強制したい場合にのみ使う
+fix_cm: null
+fix_gleak: null
+fix_vleak: null

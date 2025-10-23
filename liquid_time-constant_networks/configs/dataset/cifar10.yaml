@@ -1,0 +1,5 @@
+_name_: cifar10
+val_split: 0.1
+seed: 0
+l_max: 100
+permute: True

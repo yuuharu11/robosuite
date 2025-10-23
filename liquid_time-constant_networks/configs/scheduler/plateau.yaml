@@ -1,0 +1,12 @@
+# @package _global_
+train:
+  monitor: val/accuracy  # This should match the monitor used in the scheduler
+  interval: epoch
+
+scheduler:
+  # _target_: torch.optim.lr_scheduler.ReduceLROnPlateau
+  _name_: plateau
+  mode: ${train.mode}  # Should match the mode used in train.monitor
+  factor: 0.2  # Decay factor when ReduceLROnPlateau is used
+  patience: 10
+  min_lr: 0.0  # Minimum learning rate during annealing

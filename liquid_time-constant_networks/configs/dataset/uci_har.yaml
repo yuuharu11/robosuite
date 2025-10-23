@@ -1,0 +1,5 @@
+_name_: uci_har
+val_split: 0.2
+seed: 0
+d_output: 6
+task_id: 0

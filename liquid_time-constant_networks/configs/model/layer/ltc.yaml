@@ -1,0 +1,5 @@
+defaults:
+  - cell: ltc
+
+_name_: rnn
+return_output: true

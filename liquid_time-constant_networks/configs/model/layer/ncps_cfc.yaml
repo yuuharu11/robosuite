@@ -1,0 +1,19 @@
+_name_: cfc
+
+defaults:
+  - cell: wired_cfc
+
+units: 
+  - name: AutoNCP
+  - units: 20
+  - output_units: 10
+  - input_size: 10
+  - backbone_units: 0
+  - backbone_layers: 0
+  - backbone_dropout: 0.0
+
+return_sequences: True
+mixed_memory: True
+batch_first: True
+proj_size: null
+

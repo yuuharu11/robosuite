@@ -1,0 +1,34 @@
+# @package _global_
+defaults:
+  - /trainer: default
+  - /model: cnn_har
+  - /loader: default
+  - /dataset: uci_har_dil
+  - /task: multiclass_classification
+  - /optimizer: adamw
+  - /scheduler: cosine_warmup
+
+train:
+  monitor: val/accuracy 
+  mode: max
+
+model:
+  _name_: cnn_har
+  d_model: 9
+  d_output: 6
+
+loader:
+  batch_size: 200   
+
+optimizer:
+  lr: 1e-4
+
+scheduler:
+  num_warmup_steps: 100
+  num_training_steps: 1500
+
+decoder:
+  _name_: id
+
+encoder: 
+  _name_: id

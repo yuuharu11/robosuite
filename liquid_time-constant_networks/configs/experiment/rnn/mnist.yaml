@@ -1,0 +1,33 @@
+# @package _global_
+defaults:
+  - /pipeline: default
+  - /model: default
+
+# RNN settings for comparison
+model:
+  dropout: 0.0
+  n_layers: 4
+  d_model: 256  
+  prenorm: true
+  norm: layer
+
+dataset:
+  _name_: mnist
+  l_max: 784
+  val_split: 0.1
+
+loader:
+  batch_size: 50
+
+optimizer:
+  lr: 0.001
+
+trainer:
+  max_epochs: 5
+
+train:
+  seed: 1112
+  test: True
+  interval: step
+  monitor: val/accuracy
+  mode: max

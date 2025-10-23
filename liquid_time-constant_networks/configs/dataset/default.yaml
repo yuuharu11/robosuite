@@ -1,0 +1,6 @@
+_name_: mnist
+noise_ratio: 0.0  
+val_split: 0.1
+seed: 0
+l_max: 784
+permute: True

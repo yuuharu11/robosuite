@@ -1,0 +1,7 @@
+# @package _global_
+
+_name_: cnn_har
+d_model: 9   
+d_output: 6   
+
+n_hidden: 128 

@@ -1,0 +1,34 @@
+# @package _global_
+defaults:
+  - /pipeline: default
+  - /model: ncps_ltc
+
+# LTC Lightweight settings for MNIST
+#model:
+  #dropout: 0.2
+  #n_layers: 2          
+  #d_model: 64          
+  #prenorm: true
+  #norm: layer
+
+dataset:
+  _name_: mnist
+  l_max: 784
+  noise_ratio: 0.0
+  val_split: 0.1
+  permute: True
+  seed: 0
+
+loader:
+  batch_size: 128     
+
+optimizer:
+  lr: 3e-4
+  weight_decay: 0.01
+
+scheduler:
+  num_warmup_steps: 500
+  num_training_steps: 21000
+
+trainer:
+  max_epochs: 100      

@@ -1,0 +1,5 @@
+_name_: pamap2
+val_split: 0.2
+seed: 42
+window_size: 5.12  
+overlap: 0.5

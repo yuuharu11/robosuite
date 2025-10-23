@@ -1,0 +1,27 @@
+# @package _global_
+defaults:
+  - /pipeline: default
+  - /model: ncps_ltc
+  - override /dataset: pamap2
+
+model:
+  d_model: 10
+  layer:
+    units: 
+    - name: AutoNCP
+    - units: ${model.d_model}
+    - output_units: 12
+
+encoder:
+  _name_: linear
+
+loader:
+  batch_size: 128     
+
+optimizer:
+  lr: 5e-3
+  weight_decay: 0.01
+
+scheduler:
+  num_warmup_steps: 500
+  num_training_steps: 5800

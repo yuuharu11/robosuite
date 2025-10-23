@@ -1,0 +1,22 @@
+defaults:
+  - layer: ltc
+#_target_: src.models.sequence.SequenceModel
+_name_: sequence
+
+prenorm: true
+transposed: false
+n_layers: 1
+d_model: 128
+residual: R
+pool:
+  _name_: pool
+  stride: 1
+  expand: 1
+norm: layer
+dropout: 0.0
+tie_dropout: false
+track_norms: true # Logs to wandb
+
+# Optional encoder/decoder, e.g. add positional embeddings or padding masks
+encoder: null
+decoder: null

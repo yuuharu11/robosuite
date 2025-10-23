@@ -1,0 +1,42 @@
+# @package _group_
+# @package _global_
+defaults:
+  - /trainer: default
+  - /model: lstm
+  - /loader: default
+  - /dataset: uci_har_dil
+  - /task: multiclass_classification
+  - /optimizer: adamw
+  - /scheduler: cosine_warmup
+
+train:
+  monitor: val/accuracy 
+  mode: max
+
+encoder: 
+  _name_: linear
+  
+decoder:
+  _name_: sequence
+  mode: pool
+
+model:
+  dropout: 0.2
+  n_layers: 1
+  d_model: 112  
+  prenorm: true
+  norm: layer
+
+loader:
+  batch_size: 200
+
+optimizer:
+  lr: 5e-3
+  weight_decay: 0.05
+
+scheduler:
+  num_training_steps: 1500
+  num_warmup_steps: 100
+
+trainer:
+  max_epochs: 100

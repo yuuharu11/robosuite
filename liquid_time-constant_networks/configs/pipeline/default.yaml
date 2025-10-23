@@ -1,0 +1,20 @@
+# @package _global_
+defaults:
+  - /trainer: default
+  - /model: default
+  - /loader: default
+  - /dataset: uci_har
+  - /task: multiclass_classification
+  - /optimizer: adamw
+  - /scheduler: cosine_warmup
+
+train:
+  monitor: val/accuracy 
+  mode: max
+
+encoder: 
+  _name_: linear
+  
+decoder:
+  _name_: sequence
+  mode: pool

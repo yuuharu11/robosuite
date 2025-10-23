@@ -1,0 +1,20 @@
+#defaults:
+#  - cell: ncps_ltc
+
+_name_: ncps_ltc
+ode_unfolds: 1
+
+units: 
+  - name: AutoNCP
+  - units: 64
+  - output_units: 10
+  - input_size: 10
+
+return_sequences: True
+batch_first:  True
+mixed_memory: True
+input_mapping: "affine" #{identity, linear, affine}
+output_mapping: "affine"
+
+epsilon: 1e-8
+implicit_param_constraints: True

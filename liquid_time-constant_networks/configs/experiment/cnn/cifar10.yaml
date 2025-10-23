@@ -1,0 +1,27 @@
+# @package _global_
+defaults:
+  - /pipeline: default
+  - /model: cnn
+  - override /dataset: cifar10
+
+model:
+  _name_: cnn
+  d_model: 32
+  d_output: 10
+
+loader:
+  batch_size: 128     
+
+optimizer:
+  lr: 5e-3
+  weight_decay: 0.01
+
+scheduler:
+  num_warmup_steps: 500
+  num_training_steps: 5800
+
+decoder:
+  _name_: id
+
+encoder: 
+  _name_: id
