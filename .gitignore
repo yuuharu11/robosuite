@@ -3,3 +3,4 @@ results/
 __pycache__/
 *.log
 *.pt
+robomimic/bc_trained_models/
