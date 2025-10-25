@@ -54,8 +54,19 @@ class RobomimicLowDimV15(SequenceDataset):
     # d_input, d_output はセットアップ時に決定
     d_input = None
     d_output = None
+    L = None
     l_output = 0
-    L = 10  # 既定のシーケンス長（設定で上書き可）
+
+    def __init__(self, seed=42, val_split=0.2, seq_len=10, data_path=None, normalize=True, stride=1, obs_keys=None, **kwargs):
+        self.seq_len = seq_len
+        self.val_split = val_split
+        self.seed = seed
+        self.hdf5_path = data_path
+        self.normalize = normalize
+        self.stride = stride
+        if obs_keys is None:
+            obs_keys = ["robot0_eef_pos", "robot0_eef_quat", "robot0_gripper_qpos", "object"]
+        self.obs_keys = obs_keys
 
     @property
     def init_defaults(self):
@@ -63,19 +74,19 @@ class RobomimicLowDimV15(SequenceDataset):
         return {
             "hdf5_path": "/work/robomimic/datasets/lift/ph/low_dim_v15.hdf5",
             "obs_keys": ["robot0_eef_pos", "robot0_eef_quat", "robot0_gripper_qpos", "object"],
-            "seq_len": 10,
             "stride": 1,
             "normalize": True,
+            "seq_len": 10,
             "val_split": 0.2,
             "seed": 42,
         }
 
     def setup(self):
-        hdf5_path = getattr(self, "hdf5_path")
-        obs_keys: Sequence[str] = tuple(getattr(self, "obs_keys"))
-        seq_len: int = int(getattr(self, "seq_len"))
-        stride: int = max(1, int(getattr(self, "stride")))
-        do_norm: bool = bool(getattr(self, "normalize", True))
+        hdf5_path = self.hdf5_path
+        seq_len = int(self.seq_len)
+        obs_keys: Sequence[str] = tuple(self.obs_keys)
+        stride = int(self.stride)
+        do_norm = bool(self.normalize)
 
         if not os.path.exists(hdf5_path):
             raise FileNotFoundError(f"HDF5 not found: {hdf5_path}")
