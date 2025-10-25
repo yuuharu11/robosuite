@@ -32,13 +32,6 @@ def _read_split_demos(h5: h5py.File, split: str) -> List[str]:
             return _to_str_list(h5["mask"]["valid"][:])
     # fallback
     all_demos = sorted(list(h5["data"].keys()))
-    n = len(all_demos)
-    if split == "train":
-        return all_demos[: int(0.9 * n)]
-    if split in ("val", "valid"):
-        return all_demos[int(0.9 * n) :]
-    if split == "test":
-        return []
     return all_demos
 
 
@@ -93,14 +86,15 @@ class RobomimicLowDimV15(SequenceDataset):
 
         # まずtrain/valid/testのデモリストを取得
         with h5py.File(hdf5_path, "r") as f:
-            train_demos = _read_split_demos(f, "train")
-            # robomimicはtestが無いことが多いのでvalidをtestとして使う
-            test_demos = _read_split_demos(f, "valid")
             data_grp = f["data"]
+            train_demos = sorted(list(data_grp.keys()))
+            test_demos = []  
+            if "mask" in f and "test" in f["mask"]:
+                test_demos = _to_str_list(f["mask"]["test"][:])
 
             # 1) trainウィンドウを構築
-            X_train_list: List[np.ndarray] = []
-            Y_train_list: List[np.ndarray] = []
+            X_list: List[np.ndarray] = []
+            Y_list: List[np.ndarray] = []
 
             feat_dim = None
             act_dim = None
@@ -112,31 +106,28 @@ class RobomimicLowDimV15(SequenceDataset):
                 T = int(g["actions"].shape[0])
                 if T < seq_len:
                     continue
-                # 観測連結
-                obs_arrs = [g["obs"][k][:] for k in obs_keys]  # list of (T, Dk)
-                obs = np.concatenate(obs_arrs, axis=-1).astype(np.float32)  # (T, F)
-                act = g["actions"][:].astype(np.float32)  # (T, A)
+
+                obs_arrs = [g["obs"][k][:] for k in obs_keys]
+                obs = np.concatenate(obs_arrs, axis=-1).astype(np.float32)  # (T,F)
+                act = g["actions"][:].astype(np.float32)                     # (T,A)
 
                 if feat_dim is None:
                     feat_dim = int(obs.shape[-1])
                 if act_dim is None:
                     act_dim = int(act.shape[-1])
 
-                # スライディングウィンドウ
                 for s in range(0, T - seq_len + 1, stride):
                     e = s + seq_len
-                    X_train_list.append(obs[s:e])  # (L, F)
-                    Y_train_list.append(act[s:e])  # (L, A)
+                    X_list.append(obs[s:e])
+                    Y_list.append(act[s:e])
 
-            if len(X_train_list) == 0:
-                raise RuntimeError("No training windows constructed. Check seq_len / stride / masks.")
+            X = np.stack(X_list, axis=0)
+            Y = np.stack(Y_list, axis=0)
 
-            X_train = np.stack(X_train_list, axis=0)  # (N, L, F)
-            Y_train = np.stack(Y_train_list, axis=0)  # (N, L, A)
-
-            # 2) test(=valid)ウィンドウを構築
+            # 2) testウィンドウを構築
             X_test_list: List[np.ndarray] = []
             Y_test_list: List[np.ndarray] = []
+
             for d in test_demos:
                 if d not in data_grp:
                     continue
@@ -144,33 +135,32 @@ class RobomimicLowDimV15(SequenceDataset):
                 T = int(g["actions"].shape[0])
                 if T < seq_len:
                     continue
+
                 obs_arrs = [g["obs"][k][:] for k in obs_keys]
                 obs = np.concatenate(obs_arrs, axis=-1).astype(np.float32)
                 act = g["actions"][:].astype(np.float32)
+
                 for s in range(0, T - seq_len + 1, stride):
                     e = s + seq_len
                     X_test_list.append(obs[s:e])
                     Y_test_list.append(act[s:e])
 
-            if len(X_test_list) > 0:
-                X_test = np.stack(X_test_list, axis=0)
-                Y_test = np.stack(Y_test_list, axis=0)
-            else:
-                # testが無い場合は空データセット
-                X_test = np.zeros((0, seq_len, feat_dim), dtype=np.float32)
-                Y_test = np.zeros((0, seq_len, act_dim), dtype=np.float32)
+            X_test = np.stack(X_test_list, axis=0) if len(X_test_list) > 0 else np.zeros((0, seq_len, feat_dim), np.float32)
+            Y_test = np.stack(Y_test_list, axis=0) if len(Y_test_list) > 0 else np.zeros((0, seq_len, act_dim), np.float32)
+
+
 
         # 正規化（trainの統計から）
         if do_norm:
-            mean = X_train.reshape(-1, X_train.shape[-1]).mean(axis=0, keepdims=True)  # (1, F)
-            std = X_train.reshape(-1, X_train.shape[-1]).std(axis=0, keepdims=True)   # (1, F)
-            X_train = (X_train - mean) / (std + 1e-8)
+            mean = X.reshape(-1, X.shape[-1]).mean(axis=0, keepdims=True)  # (1, F)
+            std = X.reshape(-1, X.shape[-1]).std(axis=0, keepdims=True)   # (1, F)
+            X = (X - mean) / (std + 1e-8)
             if X_test.shape[0] > 0:
                 X_test = (X_test - mean) / (std + 1e-8)
 
         # TensorDataset へ
         self.dataset_train = torch.utils.data.TensorDataset(
-            torch.from_numpy(X_train).float(), torch.from_numpy(Y_train).float()
+            torch.from_numpy(X).float(), torch.from_numpy(Y).float()
         )
         self.dataset_test = torch.utils.data.TensorDataset(
             torch.from_numpy(X_test).float(), torch.from_numpy(Y_test).float()
@@ -180,6 +170,6 @@ class RobomimicLowDimV15(SequenceDataset):
         self.split_train_val(self.val_split)
 
         # 形状メタを更新（モデルが参照）
-        self.d_input = int(X_train.shape[-1])
-        self.d_output = int(Y_train.shape[-1]) 
+        self.d_input = int(feat_dim)
+        self.d_output = int(act_dim)
         self.L = int(seq_len)
