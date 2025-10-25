@@ -1,0 +1,72 @@
+# ============================================
+# Core Dependencies for LTC Training with Robomimic
+# ============================================
+# Minimal requirements - install PyTorch separately with appropriate CUDA version
+
+# Core Scientific Computing
+numpy>=1.20.0,<2.0
+scipy>=1.7.0
+pandas>=2.0.0
+matplotlib>=3.5.0
+scikit-learn>=1.0.0
+seaborn>=0.13.0
+
+# Deep Learning - PyTorch (install separately with CUDA)
+# pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+
+# PyTorch Lightning
+pytorch-lightning>=2.0.0
+torchmetrics>=0.7.0
+
+# Configuration & Experiment Tracking
+omegaconf>=2.3.0
+hydra-core>=1.3.0
+wandb>=0.15.0
+
+# LTC/NCP Networks
+ncps>=1.0.0
+einops>=0.6.0
+opt-einsum>=3.4.0
+
+# Robomimic/Robosuite
+h5py>=3.0.0
+opencv-python>=4.5.0
+imageio>=2.9.0
+imageio-ffmpeg>=0.4.0
+mujoco>=3.0.0
+
+# TensorFlow (for robomimic compatibility)
+tensorflow==2.14.0
+protobuf==3.20.3
+
+# Transformers (optional, for some models)
+transformers>=4.30.0
+
+# Utilities
+rich>=13.0.0
+tqdm>=4.60.0
+psutil>=5.9.0
+
+# Profiling
+ptflops>=0.7.0
+fvcore>=0.1.5
+
+# Robotics Control
+qpsolvers>=4.0.0
+
+# ============================================
+# Installation Instructions:
+# ============================================
+# 1. Create conda environment:
+#    conda create -n robomimic_venv python=3.10
+#    conda activate robomimic_venv
+#
+# 2. Install PyTorch with CUDA:
+#    pip install torch torchvision torchaudio --index-url https://download.pytorch.org/whl/cu121
+#
+# 3. Install remaining dependencies:
+#    pip install -r requirements.txt
+#
+# 4. Install robomimic and robosuite from source:
+#    cd /work/robosuite/robomimic && pip install -e .
+#    cd /work/robosuite && pip install -e .

@@ -6,7 +6,6 @@ import os
 from pathlib import Path
 
 import h5py
-import hydra
 import numpy as np
 import torch
 from omegaconf import OmegaConf
@@ -14,7 +13,6 @@ from omegaconf import OmegaConf
 # robosuite imports
 try:
     import robosuite as suite
-    from robosuite.controllers import load_controller_config
     ROBOSUITE_AVAILABLE = True
 except ImportError:
     ROBOSUITE_AVAILABLE = False
@@ -189,7 +187,7 @@ def evaluate_model(
     
     # Load checkpoint and config
     print(f"Loading checkpoint: {checkpoint_path}")
-    checkpoint = torch.load(checkpoint_path, map_location=device)
+    checkpoint = torch.load(checkpoint_path, map_location=device, weights_only=False)
     
     if config_path is None:
         # Try to find config in checkpoint directory
@@ -218,8 +216,7 @@ def evaluate_model(
     print(f"  Normalization: {normalize}")
     
     # Create robosuite environment
-    # Use same robot/gripper as in dataset
-    controller_config = load_controller_config(default_controller="OSC_POSE")
+    # Use same robot/gripper as in dataset (default controller configs)
     
     env = suite.make(
         env_name="Lift",
@@ -233,7 +230,6 @@ def evaluate_model(
         control_freq=20,  # Same as dataset (20Hz)
         horizon=max_steps,
         reward_shaping=True,
-        controller_configs=controller_config,
     )
     
     # Create evaluator
