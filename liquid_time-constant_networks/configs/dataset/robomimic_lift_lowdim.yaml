@@ -2,6 +2,6 @@ _name_: robomimic_lowdim_v15
 val_split: 0.2
 seed: 42
 seq_len: 10
-hdf5_path: /work/robomimic/datasets/lift/ph/low
+data_path: "/work/robomimic/datasets/lift/ph/low_dim_v15.hdf5"
 normalize: true
-stride: 1
+stride: 1 

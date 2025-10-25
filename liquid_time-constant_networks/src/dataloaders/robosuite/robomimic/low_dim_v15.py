@@ -22,7 +22,6 @@ def _to_str_list(arr: np.ndarray) -> List[str]:
 def _read_split_demos(h5: h5py.File, split: str) -> List[str]:
     """
     HDF5のmask/{train,valid,test} からデモキーの配列を返す。
-    なければ 9:1 の train:valid でフォールバック（testは空）。
     """
     if "mask" in h5:
         if split in h5["mask"]:
@@ -50,13 +49,14 @@ class RobomimicLowDimV15(SequenceDataset):
     L = None
     l_output = 0
 
-    def __init__(self, seed=42, val_split=0.2, seq_len=10, data_path=None, normalize=True, stride=1, obs_keys=None, **kwargs):
+    def __init__(self, seed=42, val_split=0.2, seq_len=10, data_path=None, normalize=True, stride=1, obs_keys=None, task_id=0, **kwargs):
         self.seq_len = seq_len
         self.val_split = val_split
         self.seed = seed
         self.hdf5_path = data_path
         self.normalize = normalize
         self.stride = stride
+        self.task_id = task_id  # For CIL/DIL c ompatibility (always 0 for this dataset)
         if obs_keys is None:
             obs_keys = ["robot0_eef_pos", "robot0_eef_quat", "robot0_gripper_qpos", "object"]
         self.obs_keys = obs_keys
@@ -72,10 +72,11 @@ class RobomimicLowDimV15(SequenceDataset):
             "seq_len": 10,
             "val_split": 0.2,
             "seed": 42,
+            "task_id": 0,
         }
 
     def setup(self):
-        hdf5_path = self.hdf5_path
+        hdf5_path = str(self.hdf5_path)
         seq_len = int(self.seq_len)
         obs_keys: Sequence[str] = tuple(self.obs_keys)
         stride = int(self.stride)
