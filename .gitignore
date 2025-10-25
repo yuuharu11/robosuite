@@ -5,3 +5,5 @@ __pycache__/
 *.pt
 robomimic/bc_trained_models/
 robomimic/robomimic/exps/
+csv/
+output/
