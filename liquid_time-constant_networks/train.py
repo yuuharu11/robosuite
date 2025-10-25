@@ -466,6 +466,18 @@ class SequenceLightningModule(pl.LightningModule):
         x, w = self.decoder(x, state=state, **z)
         return x, y, w
 
+    def rollout_forward(self, obs_seq, state=None):
+        """Rollout without labels for online inference"""
+        seq_len = obs_seq.shape[1]
+        action_seq = []
+        for t in range(seq_len):
+            obs_t = obs_seq[:, t, :]
+            obs_t, w = self.encoder(obs_t)       # encoder
+            obs_t, state = self.model(obs_t, **w, state=state)  # backbone step
+            obs_t, _ = self.decoder(obs_t, state=state)         # decoder
+            action_seq.append(obs_t)
+        return torch.stack(action_seq, dim=1), state
+
     def step(self, x_t):
         x_t, *_ = self.encoder(x_t) # Potential edge case for encoders that expect (B, L, H)?
         x_t, state = self.model.step(x_t, state=self._state)
