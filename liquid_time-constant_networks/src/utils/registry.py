@@ -41,10 +41,6 @@ cell = {
     "wired_cfc": "src.models.ncps.cells.wired_cfc_cell.WiredCfCCell",
 }
 
-task = {
-    "multiclass_classification": "src.tasks.classification.MulticlassClassification",
-}
-
 callbacks = {
     "score": "src.callbacks.score.Score",
     "timer": "src.callbacks.timer.Timer",

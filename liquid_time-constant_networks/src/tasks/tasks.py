@@ -123,8 +123,7 @@ class BaseTask:
             for name in self.metric_names if name in M.loss_metric_fns
         }
         return {**output_metrics, **loss_metrics}
-
-
+        
 class Scalar(nn.Module):
     def __init__(self, c=1):
         super().__init__()
